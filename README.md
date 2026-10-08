@@ -8,15 +8,11 @@ The application allows users to manage meetings, view synchronized transcripts, 
 
 ## 🚀 Live Demo
 
-> Add your deployed application URL here after deployment.
+The application is deployed and available online.
 
-**Frontend:** `Coming soon`
-
-**Backend API:** `Coming soon`
-
-**API Documentation:** `Coming soon`
-
----
+- **[Live Frontend](https://fireflies-clone-roan.vercel.app/)**
+- **[Backend API](https://fireflies-clone-backend-aaxc.onrender.com)**
+- **[Swagger API Documentation](https://fireflies-clone-backend-aaxc.onrender.com/docs)**
 
 ## 📌 Overview
 
