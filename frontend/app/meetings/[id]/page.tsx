@@ -236,49 +236,63 @@ export default function MeetingPage({
    * ==========================================================
    */
 
-  useEffect(() => {
-    async function loadMeeting() {
-      try {
-        setLoading(true);
-        setLoadError("");
+  ```tsx
+useEffect(() => {
+  async function loadMeeting() {
+    try {
+      setLoading(true);
+      setLoadError("");
 
-        const { id } = await params;
+      const { id } = await params;
+      const meetingId = Number(id);
 
-        const meetingId = Number(id);
+      if (!Number.isInteger(meetingId) || meetingId <= 0) {
+        throw new Error("Invalid meeting ID");
+      }
 
-        if (Number.isNaN(meetingId)) {
-          throw new Error("Invalid meeting ID");
-        }
+      // Meeting details are required.
+      const meetingData = await getMeeting(meetingId);
+      setMeeting(meetingData);
 
-        const [
-          meetingData,
-          transcriptData,
-          summaryData,
-          actionData,
-        ] = await Promise.all([
-          getMeeting(meetingId),
+      // These resources may not exist for a newly created meeting.
+      const [transcriptData, summaryData, actionData] =
+        await Promise.allSettled([
           getTranscript(meetingId),
           getSummary(meetingId),
           getActionItems(meetingId),
         ]);
 
-        setMeeting(meetingData);
-        setTranscript(transcriptData);
-        setSummary(summaryData);
-        setActions(actionData);
-      } catch (error) {
-        console.error("Failed to load meeting:", error);
+      setTranscript(
+        transcriptData.status === "fulfilled"
+          ? transcriptData.value
+          : []
+      );
 
-        setLoadError(
-          "We couldn't load this meeting. Please try again."
-        );
-      } finally {
-        setLoading(false);
-      }
+      setSummary(
+        summaryData.status === "fulfilled"
+          ? summaryData.value
+          : null
+      );
+
+      setActions(
+        actionData.status === "fulfilled"
+          ? actionData.value
+          : []
+      );
+    } catch (error) {
+      console.error("Failed to load meeting:", error);
+
+      setLoadError(
+        "We couldn't load this meeting. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
+  }
 
-    loadMeeting();
-  }, [params]);
+  loadMeeting();
+}, [params]);
+```
 
   /*
    * ==========================================================
